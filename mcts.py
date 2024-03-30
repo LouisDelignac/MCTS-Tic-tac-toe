@@ -6,7 +6,7 @@ class Node:
         self.state = state      # TicTacToe instance
         self.parent = parent    # Node instance
         self.children = []      # List of Node instances
-        self.wins = 0           # Number of wins
+        self.value = 0          # Value of the node : sum of wins - sum of losses
         self.visits = 0         # Number of visits
 
     def is_fully_expanded(self):
@@ -17,7 +17,7 @@ class Node:
         best_child = None
         best_score = float('-inf')
         for child in self.children:
-            exploit = child.wins / child.visits if child.visits != 0 else 0
+            exploit = child.value / child.visits if child.visits != 0 else 0
             explore = math.sqrt(math.log(self.visits) / child.visits) if child.visits != 0 else float('inf')
             score = exploit + exploration_constant * explore
             if score > best_score:
@@ -64,7 +64,11 @@ class MCTS:
             while node is not None:
                 node.visits += 1
                 if state.is_winner(player):
-                    node.wins += 1
+                    node.value += 1
+                elif state.is_draw():
+                    pass
+                else:
+                    node.value -= 1
                 node = node.parent
 
         return max(root.children, key=lambda node: node.visits).state.last_move
