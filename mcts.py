@@ -3,11 +3,12 @@ import random
 
 class Node:
     def __init__(self, state, parent=None):
-        self.state = state      # TicTacToe instance
-        self.parent = parent    # Node instance
-        self.children = []      # List of Node instances
-        self.value = 0          # Value of the node : sum of wins - sum of losses
-        self.visits = 0         # Number of visits
+        self.state = state                  # TicTacToe instance
+        self.last_move = state.last_move    # Last move made to reach this state
+        self.parent = parent                # Node instance
+        self.children = []                  # List of Node instances
+        self.value = 0                      # Value of the node : sum of wins - sum of losses
+        self.visits = 0                     # Number of visits
 
     def is_fully_expanded(self):
         return len(self.children) == len(self.state.get_legal_moves())
@@ -46,14 +47,14 @@ class MCTS:
             # Select
             while node.is_fully_expanded() and not node.state.is_terminal():
                 node = node.select_child(self.exploration_constant)
-                state.apply_move(node.state.last_move)
+                state.apply_move(node.last_move)
 
             # Expand
             if not node.is_fully_expanded() and not state.is_terminal():
                 unvisited = [move for move in state.get_legal_moves() if move not in [child.state.last_move for child in node.children]]
                 move = random.choice(unvisited)
                 state.apply_move(move)
-                node = node.add_child(state)
+                node = node.add_child(state.copy())
 
             # Rollout
             while not state.is_terminal():
@@ -69,15 +70,11 @@ class MCTS:
                     pass
                 else:
                     node.value -= 1
+                # print(node.value, node.visits)
                 node = node.parent
-
-        return max(root.children, key=lambda node: node.visits).state.last_move
-
-
-
-            
-
-            
-
-            
-
+                player = 'X' if player == 'O' else 'O'
+            # input()
+                
+        for child in root.children:
+            print(child.state.last_move, child.value, child.visits)
+        return max(root.children, key=lambda node: node.visits).last_move

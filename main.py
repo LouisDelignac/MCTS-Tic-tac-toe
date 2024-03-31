@@ -10,7 +10,7 @@ while not game.is_terminal():
         move = int(input("Your move: "))
     else:
         move = mcts.search(game)
-        print("AI chooses move:", move)
+        print("MCTS chooses move:", move)
     game.apply_move(move)
     game.print_board()
-print("Winner is player", game.current_winner)
+print("Winner is player", game.winner)

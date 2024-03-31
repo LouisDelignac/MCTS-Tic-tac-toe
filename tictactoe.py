@@ -1,13 +1,13 @@
 class TicTacToe:
     def __init__(self):
         self.board = [' ' for _ in range(9)]
-        self.current_winner = None
+        self.winner = None
         self.last_move = None
 
     def copy(self):
         new_board = TicTacToe()
         new_board.board = self.board.copy()
-        new_board.current_winner = self.current_winner
+        new_board.winner = self.winner
         new_board.last_move = self.last_move
         return new_board
     
@@ -35,7 +35,7 @@ class TicTacToe:
         return False
     
     def is_draw(self):
-        return ' ' not in self.board
+        return ' ' not in self.board and not self.is_winner('X') and not self.is_winner('O')
     
     def is_terminal(self):
         return self.is_winner('X') or self.is_winner('O') or self.is_draw()
@@ -53,9 +53,9 @@ class TicTacToe:
         self.board[move] = player
         self.last_move = move
         if self.is_winner(player):
-            self.current_winner = player
+            self.winner = player
         elif self.is_draw():
-            self.current_winner = 'DRAW'
+            self.winner = 'DRAW'
 
 if __name__ == "__main__":
     game = TicTacToe()
@@ -65,5 +65,5 @@ if __name__ == "__main__":
         game.apply_move(move)
         game.print_board()
         if game.is_terminal():
-            if game.current_winner == 'DRAW':
+            if game.winner == 'DRAW':
                 print('It is a draw!')
